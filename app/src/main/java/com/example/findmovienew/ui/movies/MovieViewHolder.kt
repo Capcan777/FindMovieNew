@@ -1,5 +1,6 @@
 package com.example.findmovienew.ui.movies
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,8 +11,7 @@ import com.example.findmovienew.R
 import com.example.findmovienew.domain.models.Movie
 
 class MovieViewHolder(parent: ViewGroup) :
-    RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context)
+    RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
         .inflate(R.layout.list_item_movie, parent, false)) {
 
     var cover: ImageView = itemView.findViewById(R.id.cover)

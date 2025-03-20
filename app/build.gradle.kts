@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.kapt")
+
 }
 
 android {
     namespace = "com.example.findmovienew"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.findmovienew"
@@ -34,13 +34,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 val moxyVersion = "2.2.2"
 dependencies {
-    implementation("com.github.moxy-community:moxy:$moxyVersion")
-    implementation("com.github.moxy-community:moxy-android:$moxyVersion")
-    kapt("com.github.moxy-community:moxy-compiler:$moxyVersion")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -54,4 +55,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("io.insert-koin:koin-android:3.3.0")
+    implementation("com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.2")
+    implementation("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 }

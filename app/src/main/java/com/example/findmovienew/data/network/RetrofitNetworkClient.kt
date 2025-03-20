@@ -4,30 +4,34 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.findmovienew.data.NetworkClient
+import com.example.findmovienew.data.dto.MovieCastRequest
+import com.example.findmovienew.data.dto.MovieCastResponse
+import com.example.findmovienew.data.dto.MovieDetailsRequest
 import com.example.findmovienew.data.dto.MoviesSearchRequest
 import com.example.findmovienew.data.dto.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-
-    private val imdbBaseUrl = "https://tv-api.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(imdbBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val imdbService = retrofit.create(IMDbApiService::class.java)
+class RetrofitNetworkClient(
+    private val imdbService: IMDbApiService,
+    private val context: Context,
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (isConnected() == false) {
             return Response().apply { resultCode = -1 }
         }
-        if (dto !is MoviesSearchRequest) {
+        // Добавили ещё одну проверку
+        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
-        val response = imdbService.searchMovies(dto.expression).execute()
+        // Добавили в выражение when ещё одну ветку
+        val response = when (dto) {
+            is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
+            is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
+            else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
+        }
         val body = response.body()
         return if (body != null) {
             body.apply { resultCode = response.code() }
@@ -38,7 +42,8 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
@@ -50,3 +55,4 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         return false
     }
 }
+

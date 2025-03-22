@@ -14,7 +14,7 @@ class MoviesApplication : Application() {
         super.onCreate()
         GlobalContext.startKoin {
             androidContext(this@MoviesApplication)
-            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule, com.example.findmovienew.di.navigationModule)
         }
     }
 }

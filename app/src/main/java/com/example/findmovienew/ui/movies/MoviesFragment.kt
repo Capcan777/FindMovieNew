@@ -13,7 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.findmovienew.R
@@ -32,26 +32,19 @@ class MoviesFragment : Fragment() {
 
     private val viewModel by viewModel<MoviesViewModel>()
 
+//    private val router: Router by inject()
+
     private val adapter = MoviesAdapter { movie ->
         if (clickDebounce()) {
-
-            // Переходим на следующий экран
-            parentFragmentManager.commit {
-                replace(
-                    // Указали в каком контейнере работаем
-                    R.id.rootFragmentContainerView,
-                    // Создали фрагмент
-                    DetailsFragment.newInstance(
-                        movieId = movie.id,
-                        posterUrl = movie.image
-                    ),
-                    // Указали тэг фрагмента
-                    DetailsFragment.TAG
-                )
-
-                // Добавляем фрагмент в back stack
-                addToBackStack(DetailsFragment.TAG)
-            }
+            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment, DetailsFragment.createArgs(movie.id, movie.image))
+//
+//            // Переходим на следующий экран
+//            router.openFragment(
+//                DetailsFragment.newInstance(
+//                    movieId = movie.id,
+//                    posterUrl = movie.image
+//                )
+//            )
 
         }
     }
@@ -68,7 +61,11 @@ class MoviesFragment : Fragment() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -82,7 +79,8 @@ class MoviesFragment : Fragment() {
         progressBar = binding.progressBar
 
         // Здесь пришлось поправить использование Context
-        moviesList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        moviesList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         moviesList.adapter = adapter
 
         textWatcher = object : TextWatcher {
@@ -122,7 +120,7 @@ class MoviesFragment : Fragment() {
     }
 
     private fun render(state: MoviesState) {
-        when(state) {
+        when (state) {
             is MoviesState.Content -> showContent(state.movies)
             is MoviesState.Empty -> showEmpty(state.message)
             is MoviesState.Error -> showError(state.message)

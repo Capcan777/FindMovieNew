@@ -5,8 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.example.findmovienew.R
 import com.example.findmovienew.databinding.FragmentAboutBinding
 import com.example.findmovienew.domain.models.MovieDetails
@@ -27,6 +28,7 @@ class AboutFragment : Fragment() {
                 putString(MOVIE_ID, movieId)
             }
         }
+//        fun createArgs(movieId: String): Bundle = bundleOf(MOVIE_ID to movieId)
     }
 
     private val aboutViewModel: AboutViewModel by viewModel {
@@ -34,6 +36,8 @@ class AboutFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentAboutBinding
+
+//    private val router: Router by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,16 +57,10 @@ class AboutFragment : Fragment() {
             }
         }
         binding.showCastButton.setOnClickListener {
-            parentFragment?.parentFragmentManager?.commit {
-                replace(
-                    R.id.rootFragmentContainerView,
-                    MoviesCastFragment.newInstance(
-                        movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                    ),
-                    MoviesCastFragment.TAG
-                )
-                addToBackStack(MoviesCastFragment.TAG)
-            }
+            findNavController().navigate(R.id.action_detailsFragment_to_moviesCastFragment, MoviesCastFragment.createArgs(movieId = requireArguments().getString(
+                MOVIE_ID).orEmpty()))
+//            router.openFragment(MoviesCastFragment.newInstance(movieId = requireArguments().getString(
+//                MOVIE_ID).orEmpty()))
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import com.example.findmovienew.R
 import com.example.findmovienew.domain.api.MoviesInteractor
 import com.example.findmovienew.domain.models.Movie
+import com.example.findmovienew.presentation.SingleLiveEvent
 
 class MoviesViewModel(private val context: Context,
                       private val moviesInteractor: MoviesInteractor) : ViewModel() {

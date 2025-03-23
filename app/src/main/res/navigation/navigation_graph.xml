@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/moviesFragment">
 
@@ -24,4 +25,14 @@
         android:id="@+id/moviesCastFragment"
         android:name="com.example.findmovienew.ui.cast.MoviesCastFragment"
         android:label="MoviesCastFragment" />
+    <fragment
+        android:id="@+id/namesFragment"
+        android:name="com.example.findmovienew.ui.names.NamesFragment"
+        android:label="fragment_names"
+        tools:layout="@layout/fragment_names" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.example.findmovienew.ui.info.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" />
 </navigation>

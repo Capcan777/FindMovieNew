@@ -8,6 +8,8 @@ import com.example.findmovienew.data.dto.MovieCastRequest
 import com.example.findmovienew.data.dto.MovieCastResponse
 import com.example.findmovienew.data.dto.MovieDetailsRequest
 import com.example.findmovienew.data.dto.MoviesSearchRequest
+import com.example.findmovienew.data.dto.NamesSearchRequest
+import com.example.findmovienew.data.dto.NamesSearchResponse
 import com.example.findmovienew.data.dto.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,7 +24,7 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = -1 }
         }
         // Добавили ещё одну проверку
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest)) {
+        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequest) && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
@@ -30,6 +32,7 @@ class RetrofitNetworkClient(
         val response = when (dto) {
             is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
             is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
+            is NamesSearchRequest -> imdbService.getArtist(dto.expression).execute()
             else -> imdbService.getFullCast((dto as MovieCastRequest).movieId).execute()
         }
         val body = response.body()

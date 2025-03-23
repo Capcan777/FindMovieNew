@@ -1,8 +1,11 @@
 package com.example.findmovienew.ui.root
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.findmovienew.R
 import com.example.findmovienew.core.navigation.NavigatorHolder
 import com.example.findmovienew.core.navigation.NavigatorImpl
@@ -28,6 +31,23 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailsFragment, R.id.moviesCastFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
 //        if (savedInstanceState == null) {
 //            navigator.openFragment(MoviesFragment())
 //        }
@@ -43,4 +63,3 @@ class RootActivity : AppCompatActivity() {
 //        navigatorHolder.detachNavigator()
 //    }
 
-}

@@ -12,6 +12,7 @@ import com.example.findmovienew.R
 import com.example.findmovienew.domain.api.MoviesInteractor
 import com.example.findmovienew.domain.models.Movie
 import com.example.findmovienew.presentation.SingleLiveEvent
+import com.example.findmovienew.util.debounce
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,6 +26,10 @@ class MoviesViewModel(private val context: Context,
     }
 
 //    private val handler = Handler(Looper.getMainLooper())
+    private val movieSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
+        changedText ->
+        searchRequest(changedText)
+}
 
     private val stateLiveData = MutableLiveData<MoviesState>()
     fun observeState(): LiveData<MoviesState> = stateLiveData
@@ -32,7 +37,7 @@ class MoviesViewModel(private val context: Context,
     private val showToast = SingleLiveEvent<String?>()
     fun observeShowToast(): LiveData<String?> = showToast
 
-    private var searchJob: Job? = null
+//    private var searchJob: Job? = null //использование Job
 
     private var latestSearchText: String? = null
 
@@ -46,11 +51,12 @@ class MoviesViewModel(private val context: Context,
         }
 
         this.latestSearchText = changedText
+        movieSearchDebounce(changedText)
 
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            searchRequest(changedText)
+//        searchJob?.cancel()
+//        searchJob = viewModelScope.launch {
+//            delay(SEARCH_DEBOUNCE_DELAY)
+//            searchRequest(changedText)
         }
 //        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 //
@@ -62,7 +68,6 @@ class MoviesViewModel(private val context: Context,
 //            SEARCH_REQUEST_TOKEN,
 //            postTime,
 //        )
-    }
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {

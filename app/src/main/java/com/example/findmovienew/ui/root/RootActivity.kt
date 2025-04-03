@@ -31,16 +31,19 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
 
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.detailsFragment, R.id.moviesCastFragment -> {
-                    binding.bottomNavigationView.visibility = View.GONE
+                    animateBottonNavigateView()
                 }
+
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
@@ -48,10 +51,14 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
+    fun animateBottonNavigateView() {
+        binding.bottomNavigationView.visibility = View.GONE
+    }
+
 //        if (savedInstanceState == null) {
 //            navigator.openFragment(MoviesFragment())
 //        }
-    }
+}
 //
 //    override fun onResume() {
 //        super.onResume()

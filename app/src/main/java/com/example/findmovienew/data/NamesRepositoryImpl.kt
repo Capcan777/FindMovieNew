@@ -5,24 +5,27 @@ import com.example.findmovienew.data.dto.NamesSearchResponse
 import com.example.findmovienew.domain.api.NamesRepository
 import com.example.findmovienew.domain.models.Person
 import com.example.findmovienew.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class NamesRepositoryImpl(private val networkClient: NetworkClient, ) : NamesRepository {
 
-    override fun searhNames(expression: String): Resource<List<Person>> {
-        val response = networkClient.doRequest(NamesSearchRequest(expression))
-        return when(response.resultCode) {
+    override fun searchNames(expression: String): Flow<Resource<List<Person>>> = flow {
+        val response = networkClient.doRequestSuspend(NamesSearchRequest(expression))
+         when(response.resultCode) {
             - 1 -> {
-                Resource.Error("Проверьте подключение к интернету")
+                emit(Resource.Error("Проверьте подключение к интернету"))
             }
             200 -> {
                 with(response as NamesSearchResponse) {
-                    Resource.Success(results.map {
+                    val data = results.map {
                         Person(id = it.id, name = it.title, description = it.description, image = it.image)
-                    })
+                    }
+                    emit(Resource.Success(data))
                 }
             }
             else -> {
-                Resource.Error("Ошибка сервера")
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }

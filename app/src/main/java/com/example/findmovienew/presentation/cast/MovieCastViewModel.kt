@@ -3,8 +3,10 @@ package com.example.findmovienew.presentation.cast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.findmovienew.domain.api.MoviesInteractor
 import com.example.findmovienew.domain.models.MovieCast
+import kotlinx.coroutines.launch
 
 class MoviesCastViewModel(
     private val movieId: String,
@@ -18,17 +20,16 @@ class MoviesCastViewModel(
     init {
         stateLiveData.postValue(MoviesCastState.Loading)
 
-        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
 
-            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
-                if (movieCast != null) {
-                    stateLiveData.postValue(castToUiStateContent(movieCast))
-                } else {
-                    stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
+        viewModelScope.launch {
+            moviesInteractor
+                .getMovieCast(movieId)
+                .collect { pair ->
+                    processResult(pair.first, pair.second)
+
                 }
-            }
 
-        })
+        }
     }
 
     private fun castToUiStateContent(cast: MovieCast): MoviesCastState {
@@ -64,6 +65,14 @@ class MoviesCastViewModel(
             fullTitle = cast.fullTitle,
             items = items
         )
+    }
+
+    private fun processResult(movieCast: MovieCast?, errorMessage: String?) {
+        if (movieCast != null) {
+            stateLiveData.postValue(castToUiStateContent(movieCast))
+        } else {
+            stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
+        }
     }
 
 }

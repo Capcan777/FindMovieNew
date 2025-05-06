@@ -3,26 +3,17 @@ package com.example.findmovienew.ui.root
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.findmovienew.R
-import com.example.findmovienew.core.navigation.NavigatorHolder
-import com.example.findmovienew.core.navigation.NavigatorImpl
 import com.example.findmovienew.databinding.ActivityRootBinding
-import com.example.findmovienew.ui.movies.MoviesFragment
-import org.koin.android.ext.android.inject
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class RootActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRootBinding
+    lateinit var confirmDialog: MaterialAlertDialogBuilder
 
-//    private val navigatorHolder: NavigatorHolder by inject()
-//
-//    private val navigator = NavigatorImpl(
-//        fragmentContainerViewId = R.id.rootFragmentContainerView,
-//        fragmentManager = supportFragmentManager
-//    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

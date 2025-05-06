@@ -3,6 +3,7 @@ package com.example.findmovienew.di
 import com.example.findmovienew.presentation.cast.MoviesCastViewModel
 import com.example.findmovienew.presentation.details.AboutViewModel
 import com.example.findmovienew.presentation.details.PosterViewModel
+import com.example.findmovienew.presentation.history.HistoryViewModel
 import com.example.findmovienew.presentation.movies.MoviesViewModel
 import com.example.findmovienew.presentation.names.NamesViewModel
 import org.koin.android.ext.koin.androidContext
@@ -28,6 +29,10 @@ val viewModelModule = module {
     }
     viewModel {
         NamesViewModel(androidContext(), get())
+    }
+
+    viewModel {
+        HistoryViewModel(androidContext(), get())
     }
 
 }

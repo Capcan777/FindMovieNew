@@ -1,7 +1,9 @@
 package com.example.findmovienew.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.findmovienew.data.NetworkClient
+import com.example.findmovienew.data.db.AppDatabase
 import com.example.findmovienew.data.network.IMDbApiService
 import com.example.findmovienew.data.network.RetrofitNetworkClient
 import com.google.gson.Gson
@@ -39,6 +41,11 @@ val dataModule = module {
 
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 
 }

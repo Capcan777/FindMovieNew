@@ -1,10 +1,13 @@
 package com.example.findmovienew.data
 
 import com.example.findmovienew.data.converters.MovieCastConverter
+import com.example.findmovienew.data.converters.MovieDbConvertor
+import com.example.findmovienew.data.db.AppDatabase
 import com.example.findmovienew.data.dto.MovieCastRequest
 import com.example.findmovienew.data.dto.MovieCastResponse
 import com.example.findmovienew.data.dto.MovieDetailsRequest
 import com.example.findmovienew.data.dto.MovieDetailsResponse
+import com.example.findmovienew.data.dto.MovieDto
 import com.example.findmovienew.data.dto.MoviesSearchRequest
 import com.example.findmovienew.data.dto.MoviesSearchResponse
 import com.example.findmovienew.domain.api.MoviesRepository
@@ -18,6 +21,8 @@ import kotlinx.coroutines.flow.flow
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val movieCastConverter: MovieCastConverter,
+    private val appDatabase: AppDatabase,
+    private val movieDbConvertor: MovieDbConvertor
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
@@ -32,6 +37,7 @@ class MoviesRepositoryImpl(
                     val data = results.map {
                         Movie(it.id, it.resultType, it.image, it.title, it.description)
                     }
+                    saveMovie(results)
                     emit(Resource.Success(data))
                 }
             }
@@ -40,6 +46,13 @@ class MoviesRepositoryImpl(
                 emit(Resource.Error("Ошибка сервера"))
             }
         }
+    }
+
+    private suspend fun saveMovie(movies: List<MovieDto>) {
+        val movieEntities = movies.map { movie ->
+            movieDbConvertor.map(movie)
+        }
+        appDatabase.movieDao().insertMovies(movieEntities)
     }
 
     override fun getMovieDetails(movieId: String): Flow<Resource<MovieDetails>> = flow {

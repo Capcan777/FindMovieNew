@@ -35,4 +35,9 @@
         android:name="com.example.findmovienew.ui.info.InfoFragment"
         android:label="fragment_info"
         tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.findmovienew.ui.history.HistoryFragment"
+        android:label="history_fragment"
+        tools:layout="@layout/fragment_history"/>
 </navigation>
